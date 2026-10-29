@@ -1,0 +1,11 @@
+services:
+  aerotrade-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aerotrade-uk
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+    restart: unless-stopped
