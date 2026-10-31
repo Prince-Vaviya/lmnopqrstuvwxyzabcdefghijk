@@ -9,3 +9,4 @@ __pycache__
 dist
 frontend/dist
 .pytest_cache
+.vercel
