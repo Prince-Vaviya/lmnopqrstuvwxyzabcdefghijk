@@ -83,3 +83,15 @@ Frontend will run at [http://localhost:5173](http://localhost:5173).
 cd backend
 PYTHONPATH=. venv/bin/pytest tests/test_api.py
 ```
+
+---
+
+## 🤖 AI Tools Disclosure
+
+In accordance with academic and project integrity guidelines, AI tools (specifically Google DeepMind Antigravity AI coding assistant and Gemini large language models) were utilized during the development of this project to assist with:
+- Ideation and system architecture design.
+- Drafting initial data processing pipelines and mathematical formulations.
+- Frontend React component structuring and Vite build configuration.
+- Generating unit tests and containerization deployment setups (Docker & Vercel serverless adapters).
+- Drafting technical specifications and commercial review documentation.
+
