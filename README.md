@@ -2,6 +2,8 @@
 
 A lightweight, clean analytics dashboard that compares **UK Wind Power Forecasts** against **Actual Power Generation** from Elexon BMRS (January 2026 data).
 
+🌐 **Live Demo:** [frontend](https://lmnopqrstuvwxyzabcdefghijk.vercel.app/)
+
 ---
 
 ## ⚡ What Does This Project Do?
