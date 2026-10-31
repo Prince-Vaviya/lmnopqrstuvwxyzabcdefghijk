@@ -1,13 +1,8 @@
 # AeroTrade UK: Internal Technical Lead Review & Architecture Specification
-**Review Target:** Internal Technical Lead / Engineering Review Board  
-**Author:** Product Developer  
-**Status:** Version 1.0 (Tested & Containerized)  
-
 ---
 
 ## 1. System Overview & Architecture
 
-AeroTrade UK is a modular full-stack analytics platform built to ingest, align, and evaluate renewable power forecast accuracy from Elexon BMRS in the context of the UK wholesale electricity market.
 
 ```
 +--------------------------------------------------------------------------------+
@@ -23,8 +18,8 @@ AeroTrade UK is a modular full-stack analytics platform built to ingest, align, 
 |         ┌─────────────────────────────────────────────────┐                    |
 |         │   Data Ingestion & Two-Tier Cache Layer         │                    |
 |         │   (backend/app/elexon_client.py)                │                    |
-|         │   • Local JSON persistence                      │                    |
-|         │   • Memory lookup tables                        │                    |
+|         │   • Local JSON persistence (backend/data/)      │                    |
+|         │   • In-memory indexed lookup tables             │                    |
 |         └─────────────────────────────────────────────────┘                    |
 |                      │                                                         |
 |                      ▼                                                         |
@@ -54,11 +49,12 @@ AeroTrade UK is a modular full-stack analytics platform built to ingest, align, 
 |                      │                                                         |
 |                      ▼                                                         |
 |         ┌─────────────────────────────────────────────────┐                    |
-|         │   React 18 / Vite Trading Dashboard             │                    |
+|         │   React 18 / Vite Modern Clean Dashboard        │                    |
 |         │   (frontend/src/)                               │                    |
 |         │   • Recharts dual-axis trajectory visualization │                    |
-|         │   • Interactive thermal hedging calculator      │                    |
-|         │   • Daily ledger with CSV export                │                    |
+|         │   • Streamlined 3-Card KPI summary view         |                    |
+|         │   • Granular daily data ledger with CSV export  │                    |
+|         │   • Modular archived extensions in archive/     │                    |
 |         └─────────────────────────────────────────────────┘                    |
 |                                                                                |
 +--------------------------------------------------------------------------------+
@@ -84,7 +80,15 @@ AeroTrade UK is a modular full-stack analytics platform built to ingest, align, 
   $$\text{Cutoff} = \text{datetime}(D-1, \text{cutoff\_hour}, \text{cutoff\_minute})$$
   $$\text{Candidate Forecasts} = \{ f \in \text{WINDFOR} \mid f.\text{startTime} = t \land f.\text{publishTime} \le \text{Cutoff} \}$$
   $$\text{Selected Forecast} = \arg\max_{f \in \text{Candidate Forecasts}} (f.\text{publishTime})$$
-- This guarantees zero lookahead leakage: forecasts published at 11:30 or 15:30 on $D-1$ are ignored for the day-ahead auction view, accurately simulating the exact information available to traders at decision time.
+- This guarantees zero lookahead leakage: forecasts published at 11:30 or 15:30 on $D-1$ are ignored for the day-ahead auction view, accurately simulating the exact information available to decision-makers at decision time.
+
+### 2.3 Streamlined User Interface & Component Architecture
+- To prevent cognitive fatigue and ensure high signal-to-noise ratio:
+  - **Primary Dashboard View:** Focuses on core deliverables:
+    1. Key Metrics: Total Actual GWh, Total Forecast GWh, Mean Absolute Error (MAE MW).
+    2. Interactive ComposedChart: Actual vs Forecast curves with over/under-forecast error bars and date brush zoom.
+    3. Daily Data Ledger: Full audit trail table with dynamic sorting and CSV export.
+  - **Archived Extensions:** Advanced modules (`ProcurementSimulator`, `DiurnalProfileView`, `DecisionSensitivityView`, `ErrorDistributionView`) are organized under `frontend/src/components/archive/` ready to be toggled or embedded on demand.
 
 ---
 
@@ -115,15 +119,15 @@ $$e_t = F_t - A_t$$
 
 ## 4. API Endpoints Specification
 
-| Method | Endpoint | Query Parameters | Description |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/health` | - | Health check and cached record counts |
-| `GET` | `/api/overview` | `date_from`, `date_to`, `cutoff_time`, `resolution` | Summary KPIs, MAE, RMSE, Bias, P90, GWh |
-| `GET` | `/api/timeseries` | `date_from`, `date_to`, `cutoff_time`, `resolution` | Aligned time-series with error delta and metadata |
-| `GET` | `/api/diurnal` | `date_from`, `date_to`, `cutoff_time`, `resolution` | 24-hour diurnal profile of MAE and Bias |
-| `GET` | `/api/distribution` | `date_from`, `date_to`, `cutoff_time`, `bins` | Histogram bins and frequency distribution |
-| `GET` | `/api/daily` | `date_from`, `date_to`, `cutoff_time`, `resolution` | Day-by-day table of outturn and error metrics |
-| `GET` | `/api/sensitivity` | `date_from`, `date_to`, `resolution` | Multi-gate comparison (06:00, 09:00, 11:00, 14:00, 18:00) |
+| Method | Endpoint | Query Parameters | Description | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/api/health` | - | Health check and cached record counts | Active |
+| `GET` | `/api/overview` | `date_from`, `date_to`, `cutoff_time`, `resolution` | Summary KPIs, MAE, RMSE, Bias, P90, GWh | Active (Dashboard) |
+| `GET` | `/api/timeseries` | `date_from`, `date_to`, `cutoff_time`, `resolution` | Aligned time-series with error delta and metadata | Active (Dashboard) |
+| `GET` | `/api/daily` | `date_from`, `date_to`, `cutoff_time`, `resolution` | Day-by-day table of outturn and error metrics | Active (Dashboard) |
+| `GET` | `/api/diurnal` | `date_from`, `date_to`, `cutoff_time`, `resolution` | 24-hour diurnal profile of MAE and Bias | Available (Backend) |
+| `GET` | `/api/distribution` | `date_from`, `date_to`, `cutoff_time`, `bins` | Histogram bins and frequency distribution | Available (Backend) |
+| `GET` | `/api/sensitivity` | `date_from`, `date_to`, `resolution` | Multi-gate comparison (06:00, 09:00, 11:00, 14:00, 18:00) | Available (Backend) |
 
 ---
 
@@ -139,7 +143,7 @@ $$e_t = F_t - A_t$$
     6. `test_sensitivity_endpoint`: Verifies multi-cutoff gate sensitivity.
     7. `test_analytics_math`: Verifies analytical precision and GWh energy integration.
 - **Frontend Build Validation:**
-  - Compiles via Vite Rollup compiler with zero linter errors into `frontend/dist/`.
+  - Compiles via Vite Rollup compiler with zero errors into `frontend/dist/`.
 - **FastAPI Static Mount:**
   - Validated that FastAPI serves the compiled React single-page application at `/` with HTTP 200 OK.
 
@@ -148,6 +152,6 @@ $$e_t = F_t - A_t$$
 ## 6. Containerization & Deployment
 
 - **Dockerfile:** Multi-stage build (Node 22 Alpine $\rightarrow$ Python 3.11 slim).
-  - Eliminates Node.js from runtime image, producing a minimal, secure container footprint.
+  - Produces a minimal, secure container footprint.
 - **Heroku / Cloud Ready:** Dynamic `$PORT` binding in `CMD` (`${PORT:-8000}`).
 - **Local Compose:** `docker-compose up --build` launches the full stack on port 8000.

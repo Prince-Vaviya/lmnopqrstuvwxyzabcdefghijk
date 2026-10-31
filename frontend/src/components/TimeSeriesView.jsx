@@ -87,29 +87,29 @@ export default function TimeSeriesView({ data, resolution }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
           <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#ffffff' }}>
-            National Wind Generation: Actual vs Day-Ahead Forecast Trajectory
+            Wind Generation: Actual vs. Forecast
           </h2>
-          <p style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-            Comparing outturn (`FUELHH: WIND`) against latest forecast (`WINDFOR`) available at D-1 decision gate
+          <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+            Hourly wind power generation compared with day-ahead forecasts
           </p>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '12px', height: '12px', backgroundColor: '#10b981', borderRadius: '2px', display: 'inline-block' }}></span>
-            <span style={{ color: 'var(--text-main)' }}>Actual Outturn (MW)</span>
+            <span style={{ color: 'var(--text-main)' }}>Actual Output</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '12px', height: '3px', backgroundColor: '#00e5ff', display: 'inline-block' }}></span>
-            <span style={{ color: 'var(--text-main)' }}>Day-Ahead Forecast (MW)</span>
+            <span style={{ color: 'var(--text-main)' }}>Forecast</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '12px', height: '12px', backgroundColor: '#f59e0b', borderRadius: '2px', display: 'inline-block' }}></span>
-            <span style={{ color: '#fbbf24' }}>Over-Forecast (MW)</span>
+            <span style={{ color: '#fbbf24' }}>Over-Forecast</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ width: '12px', height: '12px', backgroundColor: '#38bdf8', borderRadius: '2px', display: 'inline-block' }}></span>
-            <span style={{ color: '#38bdf8' }}>Under-Forecast (MW)</span>
+            <span style={{ color: '#38bdf8' }}>Under-Forecast</span>
           </div>
         </div>
       </div>

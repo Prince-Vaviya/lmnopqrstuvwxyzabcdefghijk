@@ -67,12 +67,11 @@ In January 2026, the national wind forecast **over-estimated actual generation i
 - UK balancing penalties are most punishing during the **17:00–19:00 evening demand peak**, when CCGT and peaker plant costs surge.
 - AeroTrade’s **Diurnal Pattern Engine** pinpoints hour-by-hour uncertainty, allowing traders to concentrate hedging capital where market spread risk is greatest.
 
-### Pillar 4: Interactive Day-Ahead Thermal Procurement Simulator
-- Traders enter their utility’s consumer demand load (e.g. 25,000 MW).
-- The platform calculates:
+### Pillar 4: Thermal Procurement Simulation & Scenario Hedging
+- Calculates net thermal power replacement requirements:
   $$\text{Naive Thermal Need} = \text{Demand} - \text{Wind Forecast}$$
   $$\text{Recommended Hedged Procurement} = \text{Demand} - (\text{Wind Forecast} - \text{P90 Safety Buffer})$$
-- Shows real-time estimated balancing penalty savings based on live market price spreads.
+- Quantifies balancing penalty savings based on historical system price spreads.
 
 ---
 
@@ -88,11 +87,12 @@ By applying AeroTrade’s calibrated Day-Ahead thermal procurement buffer, your 
 
 ---
 
-## 4. Product Demonstration Highlights
+## 4. Product Platform Highlights
 
-1. **Live Interactive Curve:** Inspect January 2026 storm events and high-pressure lulls with smooth zoom brushes.
-2. **Preset Filter Profiles:** Instant toggle between full-month macro trends and high-volatility storm weeks (e.g., Jan 1–7).
-3. **Daily Ledger & CSV Export:** Direct audit trail for risk compliance and quantitative model backtesting.
+1. **Clean, Focused Trading Dashboard:** Zero-friction interface displaying high-level generation totals, forecast errors, and interactive zoom curves.
+2. **Interactive Day-Ahead Trajectory:** High-resolution comparison between actual wind outturn and day-ahead forecasts with intuitive brush navigation.
+3. **Daily Ledger & CSV Export:** Direct audit trail for risk compliance, financial reconciliation, and quantitative model backtesting.
+4. **Extensible Analytics API:** Asynchronous backend providing instant access to full statistical distributions, 24-hour diurnal trends, and gate sensitivity benchmarks.
 
 ---
 

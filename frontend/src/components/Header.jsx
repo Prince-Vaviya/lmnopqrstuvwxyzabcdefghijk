@@ -1,7 +1,7 @@
 import React from 'react';
-import { Wind, Activity, Zap, BookOpen, Cpu, ShieldCheck } from 'lucide-react';
+import { Wind, Activity } from 'lucide-react';
 
-export default function Header({ onOpenPitch, onOpenTech }) {
+export default function Header() {
   return (
     <header className="glass-panel" style={{ padding: '16px 24px', marginBottom: '20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
@@ -35,18 +35,17 @@ export default function Header({ onOpenPitch, onOpenTech }) {
                 border: '1px solid rgba(59, 130, 246, 0.3)',
                 letterSpacing: '0.04em'
               }}>
-                DAY-AHEAD DESK
+                WIND POWER ANALYTICS
               </span>
             </div>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '2px' }}>
-              UK National Renewable Generation & Day-Ahead Wholesale Procurement Intelligence
+              UK National Renewable Generation: Actuals vs Day-Ahead Forecast Evaluation
             </p>
           </div>
         </div>
 
-        {/* Live Elexon Status & Quick Pitch Modals */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          
+        {/* Live Elexon Status */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -60,49 +59,8 @@ export default function Header({ onOpenPitch, onOpenTech }) {
             fontWeight: 500
           }}>
             <span className="pulse-dot"></span>
-            <span>Elexon BMRS Live (Jan 2026)</span>
+            <span>Elexon BMRS (Jan 2026)</span>
           </div>
-
-          <button
-            id="btn-client-pitch"
-            onClick={onOpenPitch}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0.08) 100%)',
-              border: '1px solid rgba(245, 158, 11, 0.4)',
-              color: '#fbbf24',
-              padding: '7px 14px',
-              borderRadius: '8px',
-              fontSize: '13px',
-              fontWeight: 600
-            }}
-          >
-            <BookOpen size={15} />
-            <span>Client Pitch</span>
-          </button>
-
-          <button
-            id="btn-tech-spec"
-            onClick={onOpenTech}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.08) 100%)',
-              border: '1px solid rgba(139, 92, 246, 0.4)',
-              color: '#c084fc',
-              padding: '7px 14px',
-              borderRadius: '8px',
-              fontSize: '13px',
-              fontWeight: 600
-            }}
-          >
-            <Cpu size={15} />
-            <span>Tech Lead Review</span>
-          </button>
-
         </div>
 
       </div>

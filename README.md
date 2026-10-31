@@ -1,148 +1,85 @@
-# AeroTrade UK: Renewable Forecast & Day-Ahead Power Procurement Platform
+# AeroTrade UK
 
-[![Docker Ready](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
-[![React 18](https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite-cyan.svg)](https://reactjs.org/)
-[![FastAPI](https://img.shields.io/badge/Backend-FastAPI%20Python-green.svg)](https://fastapi.tiangolo.com/)
-[![Elexon BMRS](https://img.shields.io/badge/Data-Elexon%20BMRS%20(Jan%202026)-orange.svg)](https://bmrs.elexon.co.uk/)
-
-A full-stack, enterprise-grade decision-support platform built for **UK Energy Utilities** trading on the wholesale Day-Ahead electricity market (EPEX SPOT / Nord Pool). 
-
-The platform evaluates the accuracy of renewable wind generation forecasts against actual national generation from **Elexon BMRS**, helping power procurement teams optimize day-ahead thermal power purchasing and quantify hedging buffers to prevent costly Balancing Mechanism cash-out penalties.
+A lightweight, clean analytics dashboard that compares **UK Wind Power Forecasts** against **Actual Power Generation** from Elexon BMRS (January 2026 data).
 
 ---
 
-## Key Features
+## ⚡ What Does This Project Do?
 
-1. **Latest Day-Ahead Forecast Filtering:** Enforces strict decision gate closure timing (default: D-1 11:00 GMT EPEX auction deadline) with zero lookahead bias.
-2. **Quantitative Accuracy Evaluation:** Computes MAE (MW), RMSE (MW), MAPE (%), Mean Directional Bias (MBE), and Standard Deviation ($\sigma$).
-3. **P90 Safety Hedging Margins:** Translates forecast variance into actionable MW thermal reserve buffers.
-4. **Diurnal Pattern Analysis:** Uncovers 24-hour error trends to pinpoint exposure during the critical 17:00–19:00 evening peak.
-5. **Interactive Procurement Simulator:** Allows trading desks to simulate consumer demand profiles and calculate net thermal procurement needs with avoided penalty estimates.
-6. **Granular Ledger & CSV Export:** Full audit trail across all 744 hourly settlement periods in January 2026.
-7. **Integrated Pitch & Tech Review Modals:** Client commercial pitch deck and internal engineering review accessible directly within the dashboard.
-
----
-
-## AI Tools Disclosure
-
-> **Mandatory Disclosure:** AI tools (specifically Google DeepMind Antigravity AI coding assistant and Gemini models) were utilized in the ideation, software architecture design, data pipeline construction, frontend component engineering, unit testing, and technical documentation of this application.
+1. **Loads Power Data**: Pulls actual national wind generation and day-ahead forecast data.
+2. **Aligns Time Periods**: Aligns hourly forecasts with actual generation based on day-ahead auction cutoff times (e.g. 11:00 GMT).
+3. **Calculates Forecast Error**: Computes key accuracy metrics:
+   - **MAE** (Mean Absolute Error)
+   - **RMSE** (Root Mean Squared Error)
+   - **Bias** (Over-forecasting vs under-forecasting tendency)
+4. **Displays Interactive Visuals**: Visualizes the forecast vs. actual curve and difference in a responsive React dashboard.
 
 ---
 
-## Deliverable Documentation
+## 🚀 Quickstart
 
-- **[Client Commercial Pitch Deck](CLIENT_PITCH.md):** Tailored for the UK Utility Wholesale Trading & Power Purchase Desk, focusing on commercial ROI and imbalance risk mitigation.
-- **[Internal Technical Lead Review](TECHNICAL_LEAD_REVIEW.md):** Comprehensive engineering specification covering system topology, temporal alignment logic, mathematical formulations, and containerization.
+### Option 1: Docker (Fastest)
 
----
-
-## Tech Stack
-
-- **Frontend:** React 18, Vite, Recharts, Lucide Icons, Modern Vanilla CSS.
-- **Backend:** Python 3.11+, FastAPI, Uvicorn, Requests, Pydantic, Pytest.
-- **Data Source:** Elexon BMRS Live APIs:
-  - Actuals: `FUELHH/stream` (`fuelType="WIND"`)
-  - Forecasts: `WINDFOR/stream` (`publishTime` vs `startTime`)
-- **Containerization:** Multi-stage `Dockerfile`, `docker-compose.yml`.
-
----
-
-## Quickstart (Local Development)
-
-### 1. Prerequisites
-- Python 3.11+
-- Node.js 18+ and npm
-- Docker (optional, for containerized run)
-
-### 2. Backend Setup
 ```bash
-# Navigate to backend directory
-cd backend
-
-# Create virtual environment and install dependencies
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-
-# Run backend test suite
-PYTHONPATH=. pytest tests/test_api.py -v
-
-# Start FastAPI backend server
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+docker compose up --build
 ```
+Open [http://localhost:8000](http://localhost:8000) in your browser.
 
-### 3. Frontend Setup
-In a new terminal:
+---
+
+### Option 2: Run Backend & Frontend Separately
+
+**1. Backend (FastAPI):**
 ```bash
-# Navigate to frontend directory
-cd frontend
+cd backend
+source venv/bin/activate    # or: python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+```
+Backend API will run at [http://localhost:8000/api/health](http://localhost:8000/api/health).
 
-# Install dependencies and start Vite dev server
+**2. Frontend (React + Vite):**
+```bash
+cd frontend
 npm install
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser. The Vite dev server automatically proxies `/api/*` calls to the FastAPI backend on port 8000.
+Frontend will run at [http://localhost:5173](http://localhost:5173).
 
 ---
 
-## Running with Docker
+## 📁 Project Structure
 
-You can run the entire unified full-stack application with a single command:
-
-```bash
-docker-compose up --build
+```text
+├── backend/
+│   ├── app/
+│   │   ├── main.py             # FastAPI entry point & API endpoints
+│   │   ├── elexon_client.py    # Loads Elexon wind actuals & forecasts (with cached JSON)
+│   │   ├── data_processor.py   # Aligns forecasts & actuals by cutoff time
+│   │   └── analytics.py        # Error calculation (MAE, RMSE, MAPE, Bias)
+│   ├── data/                   # Cached January 2026 BMRS datasets
+│   └── tests/                  # Pytest unit tests
+├── frontend/
+│   ├── src/
+│   │   ├── App.jsx             # Main dashboard view
+│   │   └── components/         # Control bar, KPI cards, TimeSeries chart, Data table
+│   └── package.json
+└── docs/                       # In-depth technical specifications & commercial briefs
+    ├── TECHNICAL_LEAD_REVIEW.md
+    └── CLIENT_PITCH.md
 ```
-
-Then visit [http://localhost:8000](http://localhost:8000). The multi-stage container builds the React frontend, packages the Python backend and cached Elexon data, and serves the entire platform seamlessly.
 
 ---
 
-## Deployment Guide
+## 📖 In-Depth Documentation
 
-### Deploying to Heroku
-The project includes a `Procfile` and dynamic `$PORT` handling:
-
-```bash
-# Log in to Heroku CLI
-heroku login
-
-# Create Heroku app
-heroku create aerotrade-uk
-
-# Deploy using container stack
-heroku stack:set container
-git push heroku main
-
-# Open deployed app
-heroku open
-```
-
-### Deploying Frontend to Vercel
-The repository includes a `vercel.json` configuration file:
-
-```bash
-# Install Vercel CLI
-npm install -g vercel
-
-# Deploy
-vercel --prod
-```
-Configure your Vercel project environment variable `VITE_API_URL` to point to your deployed Python backend on Heroku/Render.
+- **[Technical Lead Review & Architecture Specification](docs/TECHNICAL_LEAD_REVIEW.md):** System topology, alignment algorithms, zero-lookahead cutoff formulations, and endpoint specs.
+- **[Commercial Client Pitch Deck](docs/CLIENT_PITCH.md):** Wholesale power procurement rationale, Balancing Mechanism exposure analysis, and ROI.
 
 ---
 
-## January 2026 Elexon Ground Truth Insights
+## 🧪 Running Tests
 
-| Metric | January 2026 Outturn |
-| :--- | :--- |
-| **Total Actual Wind Outturn** | 8,616.07 GWh |
-| **Total Forecasted Wind** | 9,985.25 GWh |
-| **Net Imbalance Volume** | +1,369.18 GWh |
-| **Mean Absolute Error (MAE)** | 2,122.8 MW (nMAE: 11.96%) |
-| **Root Mean Squared Error (RMSE)** | 2,616.7 MW |
-| **Mean Directional Bias** | +1,840.3 MW |
-| **Over-Forecast Frequency** | **84.4% of all hours** |
-| **P90 Hedging Margin** | **+4,313.0 MW** |
-| **Peak Actual Generation** | 17,755.5 MW |
-
-**Key Commercial Takeaway:** Day-ahead wind forecasts chronically over-predicted wind generation in January 2026 (84.4% of the time). Without AeroTrade's quantified P90 buffer (+4,313 MW), trading desks are exposed to severe cash-out penalties in the UK Balancing Mechanism.
+```bash
+cd backend
+PYTHONPATH=. venv/bin/pytest tests/test_api.py
+```
